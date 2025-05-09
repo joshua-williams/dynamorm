@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="d"
+                 name="DynamORM"
+                 start-page="Introduction.topic">
+
+    <toc-element topic="Introduction.topic"/>
+    <toc-element topic="Quick-Start.topic">
+        <toc-element topic="Database-Setup.topic"/>
+        <toc-element topic="Create-DynamoDB-Table.topic"/>
+        <toc-element topic="Bootstrap-Container.topic"/>
+        <toc-element topic="Save-Items.topic"/>
+    </toc-element>
+    <toc-element topic="Query-Builder.topic">
+        <toc-element topic="Operators.topic"/>
+    </toc-element>
+</instance-profile>

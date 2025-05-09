@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Bootstrap Container" id="Bootstrap-Container">
+
+  <p>
+    DynamORM wraps your database code in container that exposes an easy to use api. This is the entry point for
+    interacting with DynamoDB service.
+  </p>
+
+  <tip>
+    DynamORM depends on @aws-sdk/client-dynamodb to execute database operations.
+    Be sure <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html#cli-configure-files-where">AWS credentials</a>
+    are stored in <code>~/.aws/credentials</code> file or as environment variables.
+  </tip>
+
+  <p>Use the create method to create an instance of DynamORM with which you can interact with DynamoDB</p>
+
+  <p>Create database instance <code>db.ts</code></p>
+  <code-block lang="typescript">
+    import { DynamormFactory } from 'dynamorm';
+    import dbContainer from "./container";
+
+    export default Dynamorm.create(dbContainer);
+
+  </code-block>
+
+
+</topic>

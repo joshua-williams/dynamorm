@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Database Setup" id="Database-Setup">
+  <procedure>
+    <step>
+      Define an Entity <code>user.entity.ts</code>
+      <code-block lang="typescript">
+        import { Entity, attribute } from 'dynamorm';
+
+        export class UserEntity extends Entity {
+          @attribute()
+          firstName: string;
+
+          @attribute()
+          lastName: string;
+
+          @attribute()
+          email: string;
+        }
+      </code-block>
+    </step>
+    <step>
+      Define a Table <code>users.table.ts</code>
+      <code-block lang="typescript">
+        import { Table, table } from 'dynamorm';
+        import UserEntity from './user.entity';
+
+        @table({
+          name: 'Users',
+          primaryKey: {pk: 'email'},
+          entity: [UserEntity]
+        })
+        export class UsersTable extends Table {}
+      </code-block>
+    </step>
+
+    <step>
+      Define Container <code>db.container.ts</code>
+      <code-block lang="typescript">
+        import { DynamoDBClient} from '@aws-sdk/client-dynamodb';
+        import { dynamorm } from 'dynamorm';
+
+        @dynamorm({
+          client: new DynamoDBClient(),
+          tables: [UsersTable],
+        })
+        export default class Container {}
+      </code-block>
+    </step>
+  </procedure>
+</topic>

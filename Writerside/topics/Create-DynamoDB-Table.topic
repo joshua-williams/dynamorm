@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Create DynamoDB Table" id="Create-DynamoDB-Table">
+
+  <p>Now that the database been setup, we will write a migration script that will create the <code>Users</code>
+    table in our AWS environment.
+  </p>
+  <procedure>
+    <step>
+      Create migration script <code>migration.ts</code>
+      <code-block lang="typescript">
+        import { DynamormFactor } from 'dynamorm';
+        import Container from './db.container';
+
+        const db = DynamoFactory.create(container);
+
+        await db.createTables()
+      </code-block>
+    </step>
+    <step>
+      Run migration script
+      <code-block lang="bash">
+        npx ts-node ./migration.ts
+      </code-block>
+    </step>
+    <p>That's it! <code>Users</code> table should be created in your default AWS environment.</p>
+  </procedure>
+</topic>

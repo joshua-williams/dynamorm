@@ -14,8 +14,7 @@ export function table(options:TableOptions) {
 
 export function model(options: ModelOptions) {
   return function (constructor) {
-    Reflect.defineMetadata('model', true, constructor);
-    Reflect.defineMetadata('entities', options.entities, constructor);
+    Reflect.defineMetadata('table', options.table, constructor);
   }
 }
 

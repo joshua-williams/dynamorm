@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Operators" id="Operators">
+
+  <p>Query Builder supports the same comparison and logical operators as AWS DynamoDB</p>
+
+  <chapter title="Logical Operators" id="logical-operators">
+    <p>
+      Query Builder supports the same logical operators as AWS Dynamodb
+    </p>
+    <deflist type="narrow">
+      <def title="AND">TRUE if all the conditions separated by AND are TRUE</def>
+      <def title="BETWEEN">TRUE if the operand is within the range of comparisons</def>
+      <def title="IN">TRUE if the operand is equal to one of a list of expressions</def>
+      <def title="IS">TRUE if the operand is a given data type, including NULL or MISSING</def>
+      <def title="LIKE">TRUE if the operand matches a pattern</def>
+      <def title="NOT">Reverses the value of a given Boolean expression</def>
+      <def title="OR">TRUE if any of the conditions separated by OR is TRUE</def>
+    </deflist>
+  </chapter>
+
+  <chapter title="Comparison Operators" id="comparison-operators">
+    <deflist type="narrow">
+      <def title="=">Equal to</def>
+      <def title=">">Greater than</def>
+      <def title="<">Less than</def>
+      <def title=">=">Greater than or equal to</def>
+      <def title="<>">Not equal to</def>
+    </deflist>
+  </chapter>
+</topic>

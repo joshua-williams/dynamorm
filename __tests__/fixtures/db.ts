@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import {AuthorTable, CookbookTable, RecipeTable} from "./tables";
 import { DynamoDBClient} from "@aws-sdk/client-dynamodb";
-import {Dynamorm, dynamorm} from "../../index";
+import {DynamormFactory, dynamorm} from "../../index";
 import {AuthorModel, CookbookModel} from "./models";
 
 const configuration = process.env.ENVIRONMENT == 'local' ? {endpoint: "http://localhost:8000"} : {}
@@ -11,6 +11,6 @@ const configuration = process.env.ENVIRONMENT == 'local' ? {endpoint: "http://lo
   tables: [AuthorTable, CookbookTable, RecipeTable],
   models: [CookbookModel, AuthorModel]
 })
-class Db {}
+export class DB {}
 
-export default Dynamorm.create(Db)
+export default DynamormFactory.create(DB)

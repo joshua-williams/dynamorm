@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Introduction" id="Introduction" help-id="introduction">
+    <p>
+      DynamORM is an object-relational mapper (ORM) for interacting with DynamoDB.
+      Written in Typescript with a fluent query interface, it can used perform DynamoDB operations in your node applications.
+    </p>
+
+  <chapter title="Basic Concepts" id="basic-concepts">
+    <p>
+      The architecture of DynamORM is basic and can be broken down into four basic concepts.
+    </p>
+
+    <deflist>
+      <def title="Table">An abstract class that represents a Dynamodb table</def>
+      <def title="Entity">An abstract class that represents a record in dynamodb</def>
+      <def title="Model">An object that exposes an api to perform CRUD operations on an Entity</def>
+      <def title="QueryBuilder">A fluent query builder for executing dynamodb commands</def>
+      <def title="Container">A DynamORM application instance for interfacing with DynamoDB</def>
+    </deflist>
+
+  </chapter>
+</topic>

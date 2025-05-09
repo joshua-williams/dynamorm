@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+  SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Quick Start" id="Quick-Start">
+
+  <p>
+    DynamORM makes it easy to get up and running with Dynamodb.
+  </p>
+  <p>
+    In this guide we will create a table in Dynamodb table named <code>Users</code> then perform CRUD
+    operations on it.
+  </p>
+  <chapter title="Installation" id="installation">
+    <code-block lang="bash">
+      npm install dynamorm
+    </code-block>
+  </chapter>
+</topic>

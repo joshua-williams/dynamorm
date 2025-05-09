@@ -2,8 +2,12 @@
   "name": "dynamorm",
   "version": "1.0.0",
   "description": "DynamoRM is an object-relational mapper (ORM) for interacting with DynamoDB.",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["/dist"],
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
     "test": "jest",
     "test:watch": "jest --watch",
     "start": "docker compose up"
@@ -30,7 +34,7 @@
     "aws-sdk-client-mock": "^3.0.1",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.511.0",

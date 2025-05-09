@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
     "target": "ESNext",
     "module": "NodeNext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+
   },
-  "include": ["src/**/*", "*.ts"]
+  "include": ["*.ts", "src/**/*"]
 }

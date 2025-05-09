@@ -37,31 +37,30 @@ describe('app', () => {
 
     it('should make entity into model instance', () => {
       const model = db.model('CookbookEntity');
+
       const attributes = model.getAttributes();
       const expectedAttributes = {
-        title: undefined,
-        summary: undefined,
-        description: undefined,
-        author: undefined,
-        image: undefined
+        title: { type: 'S', required: false, value: 'Southern Cornbread' },
+        summary: { type: 'S', required: false, value: undefined },
+        description: { type: 'S', required: false, value: undefined },
+        author: { type: 'S', required: false, value: undefined },
+        image: { type: 'SS', required: true, value: undefined },
+        reviews: { type: 'N', required: false, value: undefined }
       }
-      expect(model.constructor.name).toBe('EntityModel')
+      expect(model.constructor.name).toBe('DynamicModel')
       expect(attributes).toMatchObject(expectedAttributes);
       expect(model).toBeInstanceOf(Model)
     })
 
     it('should get entities from model', () => {
       const model = db.model('CookbookModel');
-      const entities = model.getEntities();
-      expect(entities).toBeInstanceOf(Array)
-      expect(entities).toHaveLength(3)
+      const entity = model.getEntity(true);
+      expect(entity).toBeInstanceOf(Entity)
     })
     it('should get entities from model made from entity', () => {
       const model = db.model('CookbookEntity');
-      const entities = model.getEntities();
-      expect(entities).toBeInstanceOf(Array)
-      expect(entities).toHaveLength(1)
-      expect(entities[0]).toBeInstanceOf(Entity)
+      const entity = model.getEntity(true);
+      expect(entity).toBeInstanceOf(Entity)
     })
   })
 
@@ -77,7 +76,7 @@ describe('app', () => {
 
     it('should get an attribute default value', () => {
       const title = model.get('title');
-      expect(title).toEqual('Southern Smothered');
+      expect(title).toEqual('Southern Cornbread');
     })
 
     it('should set an attribute', () => {
@@ -92,23 +91,37 @@ describe('app', () => {
         summary: 'A collection of good recipes'
       }
       model.fill(expectedAttributes)
-      const attributes = model.getAttributes();
+      const attributes = model.getAttributeValues();
       expect(attributes).toMatchObject(expectedAttributes);
     })
 
   })
 
-  describe('table creation', () => {
-    it('should create table', async () => {
-      const Constructor = db.getTable('CookbookTable');
-      const result = await db.createTable(Constructor);
-      expect(result).toHaveProperty('TableDescription');
+  describe('save item', () => {
+    it('should save item', () => {
+      const model = db.model('AuthorEntity');
+      model.fill({
+        firstName: 'Jack',
+        lastName: 'Black',
+        email: 'jack@black.com'
+      })
+      model.save();
     })
+  })
 
-    it('should create all tables', async () => {
-      const result = await db.createTables();
-      console.log(result);
-      expect(result).toBeInstanceOf(Array);
+  describe('query', () => {
+    it('should query table', async () => {
+      const model = await db.query('Cookbooks')
+        .where('title', '=', 'Southern Sweets')
+        .first();
+      const attributes = model.getAttributeValues();
+      const expectedAttributes = {
+        title: 'Southern Sweets',
+        author: 'dev@studiowebfx.com',
+        image: [ 'logo.png' ]
+      }
+      expect(model).toBeInstanceOf(Model);
+      expect(attributes).toMatchObject(expectedAttributes)
     })
   })
 })

@@ -1,24 +1,10 @@
-import { AuthorEntity, CookbookEntity, RecipeEntity } from "./entities";
-import {Model} from "../../index";
+import {model, Model} from "../../index";
+import {AuthorTable, CookbookTable} from "./tables";
 
-export class CookbookModel extends Model {
+@model({table: CookbookTable})
+export class CookbookModel extends Model {}
 
-  protected entities = [
-    CookbookEntity,
-    AuthorEntity,
-    RecipeEntity
-  ];
-
-  protected attributes = {
-    title: 'Southern Smothered',
-    summary: 'A cookbook with some of the best southern gravy recipes on the internet',
-  }
-}
-
+@model({table: AuthorTable})
 export class AuthorModel extends Model {
-  protected attributes = [
-    'firstName',
-    'lastName',
-    'email'
-  ]
+
 }

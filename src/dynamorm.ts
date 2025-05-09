@@ -1,25 +1,36 @@
 import 'reflect-metadata';
-import {CreateTableCommand, DynamoDBClient, ResourceInUseException} from "@aws-sdk/client-dynamodb";
+import {
+  CreateTableCommandOutput,
+  DynamoDBClient,
+} from "@aws-sdk/client-dynamodb";
 import Model from "./model";
 import {Entity} from "../index";
-import Table from "./table";
-import {EntityConstructor, ModelConstructor, TableConstructor} from "./types";
-
+import {CreateTableOption, DynamormIoC, EntityConstructor, ModelConstructor, TableConstructor} from "./types";
+import QueryBuilder from './query';
 /**
  * @todo throw error if tables or client is undefined
  */
-class DynamoRM {
+export class DynamoRM implements DynamormIoC {
   private readonly tables: Array<any>;
-  private readonly models: Array<any>
+  private readonly models: Array<any>;
   private readonly client: DynamoDBClient;
+  private readonly queryBuilder: QueryBuilder;
 
-  constructor(App: Function) {
-    this.tables = Reflect.getMetadata('tables', App)
-    this.models = Reflect.getMetadata('models', App)
-    this.client = Reflect.getMetadata('client', App);
+  constructor(DB: Function) {
+    this.tables = Reflect.getMetadata('tables', DB)
+    this.models = Reflect.getMetadata('models', DB) || []
+    this.client = Reflect.getMetadata('client', DB);
+    this.queryBuilder = new QueryBuilder(this);
     if (!this.tables || !this.client) {
       throw new Error('A dynamodb client and tables are required')
     }
+  }
+
+  query(tableName: string) {
+    return this.queryBuilder.table(tableName)
+  }
+  getClient() {
+    return this.client;
   }
 
   getTables() {
@@ -28,40 +39,37 @@ class DynamoRM {
 
   getTable(tableName: string): TableConstructor {
     for (let table of this.tables) {
+      // Get table by Class/Constructor name
       if (tableName === table.name) {
+        return table;
+      }
+      // Get table by table name
+      if (Reflect.getMetadata('name', table) == tableName) {
         return table;
       }
     }
   }
 
-  async createTable(tableConstructor: TableConstructor): Promise<any> {
-    const table = new tableConstructor();
-    const commandInput = table.toCreateCommandInput();
-    // @ts-ignore
-    const command = new CreateTableCommand(commandInput);
-    let response;
-    let message = `Failed to save table ${table.constructor.name}`
-    try {
-      response = await this.client.send(command);
-    } catch ( e ) {
-
-      switch ( e.constructor ) {
-        case ResourceInUseException:
-          message = `Table already exists "${table.constructor.name}"`
-          break;
-      }
-      throw new Error(message);
-    }
-    return response;
-  }
-
-  public async createTables() {
+  public async createTables(option?: CreateTableOption): Promise<CreateTableCommandOutput[]> {
     const results = [];
     for ( let Constructor of this.tables ) {
-      const result = await this.createTable(Constructor)
+      const table = new Constructor(this.client);
+      if (option) {
+        const exists = await table.exists();
+        if (option == 'IF_NOT_EXISTS' && exists) continue;
+        if (option == 'DROP_IF_EXISTS' && exists) await table.delete();
+      }
+      const result = await table.create(Constructor)
       results.push(result);
     }
     return results;
+  }
+
+  public async deleteTables() {
+    for (let Constructor of this.tables ) {
+      const table = new Constructor(this.client);
+      await table.delete(Constructor);
+    }
   }
 
   getModels(): Array<ModelConstructor> {
@@ -76,48 +84,51 @@ class DynamoRM {
     }
   }
 
-  private entityToModel(Constructor: EntityConstructor): Model {
-    const attributeDefinitions = Reflect.getMetadata('attributes', Constructor.prototype);
-    const reducer = (attributes: Record<string, any>, attribute: string) => {
-      attributes = {...attributes, [attribute]: undefined}
-      return attributes;
-    }
-    const attributes = Object.keys(attributeDefinitions).reduce(reducer, {})
-    class EntityModel extends Model {
-      protected entities: Array<EntityConstructor> = [Constructor.prototype];
+  private tableToModel(table: TableConstructor): Model {
+    const attributes = table.getEntity(true).getAttributeDefinitions();
+    class DynamicModel extends Model {
       protected attributes = attributes
     };
-    Object.assign(EntityModel.prototype, Entity);
-    return new EntityModel();
+    Reflect.defineMetadata('table', table, DynamicModel);
+    Object.assign(DynamicModel.prototype, Entity);
+    return new DynamicModel(this.client);
   }
 
-  model(modelName: string, attributes?:Record<string, any>):Model {
+  /**
+   * @description Get model instance by table name, table class name or entity class name
+   * @param modelName
+   * @param attributes
+   */
+  model<T>(modelName: string, attributes?:Record<string, any>): Model & T {
     let Constructor:ModelConstructor = this.getModel(modelName);
     let model:Model;
 
     if (Constructor) {
-      model = new Constructor();
+      model = new Constructor(this.client);
     } else {
       for (let table of this.tables) {
-        const EntityConstructor = table.getEntity();
-        if (EntityConstructor.name == modelName) {
-          model = this.entityToModel(EntityConstructor);
+        if (modelName == table.getName()) {
+          model = this.tableToModel(table);
+          break;
+        }
+
+        const entityConstructor: EntityConstructor = table.getEntity();
+        if (entityConstructor.name == modelName) {
+          model = this.tableToModel(table);
           break;
         }
       }
     }
-
     if (!model) return;
-    model.init();
     if (attributes) {
       model.fill(attributes);
     }
 
-    return model;
+    return model as Model&T;
   }
 }
 
-export const create = (App: Function) => {
+export const create = (App: Function): DynamormIoC => {
   return new DynamoRM(App);
 }
 

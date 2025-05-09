@@ -1,5 +1,9 @@
 # DynamORM
-DynamORM is an object-relational mapper (ORM) for interacting with DynamoDB.
+DynamORM is an object-relational mapper (ORM) for interacting with DynamoDB
+written in Typescript.
+
+_Requires tsconfig target set to ESNext_
+
 ### Define an Entity
 An entity defines all attributes associated with a single DynamoDB table.
 
